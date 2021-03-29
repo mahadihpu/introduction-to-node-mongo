@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hey mom , look !! I have mongo db....</h1>
+    <form method="post" action="/addProduct">
+        <input type="text" name="name" placeholder="product name" />
+        <input type="number" name="price" placeholder="product price" />
+        <input type="number" name="quantity" placeholder="product quantity" />
+        <button type="submit">Add Product</button>
+    </form>
+
+    <div id="products">
+
+    </div>
+
+    <script>
+        fetch('/products')
+        .then(res => res.json())
+        .then(products => {
+            console.log(products);
+            products.forEach(product => {
+                const container = document.getElementById("products");
+                const p = document.createElement("p");
+                p.innerHTML = `<b>${product.name}</b>, price: ${product.price}, Quantity: ${product.quantity} <button onclick="deleteProduct('${product._id}')">delete</button><button onclick="loadProduct('${product._id}')">Update</button>`;
+                container.appendChild(p);
+            })
+        })
+        function deleteProduct(id) {
+            fetch(`/delete/${id}` , {
+                method: 'DELETE',
+              })
+              .then(res => res.json())
+              .then(result => console.log('deleted successfully'))
+        }
+        function loadProduct(id){
+            fetch(`/product/${id}`)
+              .then(res => res.json())
+              .then(data => {
+                  console.log(data)
+              })
+        }
+    </script>
+</body>
+</html>
